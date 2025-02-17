@@ -7,7 +7,8 @@ export UPSTREAM_URL="https://mirror.nju.edu.cn/openwrt"
 [ -x ./setup.sh ] && ./setup.sh
 
 # 替换软件源
-[ -f repositories.conf ] && sed -i "s|https://downloads.openwrt.org|$UPSTREAM_URL|g" repositories.conf
+[ -f repositories ] && sed -i "s|https://downloads.openwrt.org|$UPSTREAM_URL|g" repositories
+
 
 # 不需要的格式
 cat <<EOF >>.config

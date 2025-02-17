@@ -1,13 +1,10 @@
 #!/bin/bash
 # shellcheck disable=SC2207
 
-export UPSTREAM_URL="https://mirror.nju.edu.cn/openwrt"
-
-# 初始化打包环境
-[ -x ./setup.sh ] && ./setup.sh
+export UPSTREAM_URL="https://mirror.nju.edu.cn/immortalwrt"
 
 # 替换软件源
-[ -f repositories.conf ] && sed -i "s|https://downloads.openwrt.org|$UPSTREAM_URL|g" repositories.conf
+[ -f repositories ] && sed -i "s|https://downloads.immortalwrt.org|$UPSTREAM_URL|g" repositories
 
 # 不需要的格式
 cat <<EOF >>.config
@@ -15,6 +12,7 @@ CONFIG_ISO_IMAGES=n
 CONFIG_VDI_IMAGES=n
 CONFIG_VMDK_IMAGES=n
 CONFIG_VHDX_IMAGES=n
+CONFIG_QCOW2_IMAGES=n
 CONFIG_TARGET_ROOTFS_SQUASHFS=n
 EOF
 
@@ -48,15 +46,15 @@ INCLUDEDS=(
     curl
     # wget-ssl tar gzip xz bzip2
 
-    # luci
-    luci
-    luci-light
+    # luci 主题
+    luci-theme-argon
 
     # luci 应用
     luci-i18n-base-zh-cn            # 基础中文包
     luci-i18n-firewall-zh-cn        # 防火墙
     luci-i18n-package-manager-zh-cn # 软件包管理工具
     luci-i18n-upnp-zh-cn            # UPnP 管理工具
+    luci-i18n-argon-config-zh-cn    # Argon 配置工具
 )
 
 # 排除组件

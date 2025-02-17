@@ -1,6 +1,11 @@
 #!/bin/bash
 # shellcheck disable=SC2207
 
+export UPSTREAM_URL="https://mirror.nju.edu.cn/immortalwrt"
+
+# 替换软件源
+[ -f repositories.conf ] && sed -i "s|https://downloads.immortalwrt.org|$UPSTREAM_URL|g" repositories.conf
+
 # 不需要的格式
 cat <<EOF >>.config
 CONFIG_ISO_IMAGES=n
