@@ -1,6 +1,25 @@
 #!/bin/bash
+# shellcheck disable=SC2207
 
-ENABLEDS=(
+export UPSTREAM_URL="https://mirrors.tuna.tsinghua.edu.cn/openwrt"
+
+# 初始化打包环境
+# [ -x ./setup.sh ] && ./setup.sh
+
+# 替换软件源
+[ -f repositories.conf ] && sed -i "s|https://downloads.openwrt.org|$UPSTREAM_URL|g" repositories.conf
+
+# 不需要的格式
+cat <<EOF >>.config
+CONFIG_ISO_IMAGES=n
+CONFIG_VDI_IMAGES=n
+CONFIG_VMDK_IMAGES=n
+CONFIG_VHDX_IMAGES=n
+CONFIG_TARGET_ROOTFS_SQUASHFS=n
+EOF
+
+# 包含组件
+INCLUDEDS=(
     # kmod：PVE 虚拟网卡驱动
     kmod-8139cp  # Realtek 8139C+ PCI 网卡驱动
     kmod-8139too # Realtek 8139 PCI 网卡驱动
@@ -33,18 +52,15 @@ ENABLEDS=(
     luci
     luci-light
 
-    # luci 主题
-    luci-theme-argon
-
     # luci 应用
     luci-i18n-base-zh-cn            # 基础中文包
     luci-i18n-firewall-zh-cn        # 防火墙
     luci-i18n-package-manager-zh-cn # 软件包管理工具
     luci-i18n-upnp-zh-cn            # UPnP 管理工具
-    luci-i18n-argon-config-zh-cn    # Argon 配置工具
 )
 
-DISABLEDS=(
+# 排除组件
+EXCLUDEDS=(
     # 显卡驱动
     kmod-drm-i915     # Intel i915 系列显卡驱动
     i915-firmware-dmc # Intel i915 系列显卡驱动依赖
@@ -96,13 +112,9 @@ DISABLEDS=(
     kmod-usb-net-sr9700         # CoreChip-sz SR9700 based USB 1.1 10/100 ethernet devices
 )
 
-# DISABLEDS - ENABLEDS 差集
-# shellcheck disable=SC2207
-DISABLEDS=($(printf "%s\n" "${DISABLEDS[@]}" | grep -Fxv -f <(printf "%s\n" "${ENABLEDS[@]}")))
+# 将明确包含的组件从排除列表中移除
+EXCLUDEDS=($(printf "%s\n" "${EXCLUDEDS[@]}" | grep -Fxv -f <(printf "%s\n" "${INCLUDEDS[@]}")))
 
-PACKAGES="$(printf '%s ' "${ENABLEDS[@]}") $(printf -- '-%s ' "${DISABLEDS[@]}")"
-
-
-[ -x ./setup.sh ] && ./setup.sh
+PACKAGES="$(printf '%s ' "${INCLUDEDS[@]}") $(printf -- '-%s ' "${EXCLUDEDS[@]}")"
 
 make image PACKAGES="$PACKAGES" ROOTFS_PARTSIZE="512" -j"$(nproc)"
