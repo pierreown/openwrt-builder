@@ -98,4 +98,4 @@ DISABLEDS=($(printf "%s\n" "${DISABLEDS[@]}" | grep -Fxv -f <(printf "%s\n" "${E
 
 PACKAGES="$(printf '%s ' "${ENABLEDS[@]}") $(printf -- '-%s ' "${DISABLEDS[@]}")"
 
-make image PACKAGES="$PACKAGES" ROOTFS_PARTSIZE="512"
+make image PACKAGES="$PACKAGES" ROOTFS_PARTSIZE="512" -j"$(nproc)"

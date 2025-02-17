@@ -105,4 +105,4 @@ PACKAGES="$(printf '%s ' "${ENABLEDS[@]}") $(printf -- '-%s ' "${DISABLEDS[@]}")
 
 [ -x ./setup.sh ] && ./setup.sh
 
-make image PACKAGES="$PACKAGES" ROOTFS_PARTSIZE="512"
+make image PACKAGES="$PACKAGES" ROOTFS_PARTSIZE="512" -j"$(nproc)"
