@@ -45,6 +45,10 @@ INCLUDEDS=(
     htop
     curl
     # wget-ssl tar gzip xz bzip2
+    
+    # luci
+    luci
+    luci-light
 
     # luci 主题
     luci-theme-argon
