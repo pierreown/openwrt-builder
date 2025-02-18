@@ -24,12 +24,12 @@ EXTRA_MIRROR_URL="${EXTRA_MIRROR_URL:-https://mirror.nju.edu.cn/immortalwrt}"
 # 第三方软件
 if [ -n "$EXTRA_MIRROR_URL" ]; then
     if [ -f repositories.conf ]; then
-        # 不验证签名
+        # 不验证签名 https://github.com/immortalwrt/keyring/tree/master/usign
         sed -i -re 's/^(option check_signature.*)/# \1/g' repositories.conf
         echo "CONFIG_SIGNATURE_CHECK=" >>.config
         echo "src/gz extra_luci $EXTRA_MIRROR_URL/$VERSION_PATH/packages/x86_64/luci" >>repositories.conf
     elif [ -f repositories ]; then
-        # 不验证签名
+        # 不验证签名 https://github.com/immortalwrt/keyring/tree/master/apk
         echo "CONFIG_SIGNATURE_CHECK=" >>.config
         echo "$EXTRA_MIRROR_URL/$VERSION_PATH/packages/x86_64/luci/packages.adb" >>repositories
     fi
