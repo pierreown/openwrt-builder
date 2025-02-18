@@ -1,8 +1,8 @@
 #!/bin/bash
 
-: "${VERSION:="24.10.0"}" # or "SNAPSHOT"
+VERSION="24.10.0"
 
-IMAGE="openwrt/imagebuilder:x86-64-$VERSION"
+IMAGE="openwrt/imagebuilder:x86-64-${VERSION:-SNAPSHOT}"
 BUILD_DIR="/builder"
 WORK_DIR="$(pwd)"
 

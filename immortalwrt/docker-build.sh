@@ -1,8 +1,8 @@
 #!/bin/bash
 
-: "${VERSION:="openwrt-24.10.0"}" # or "snapshot"
+VERSION="openwrt-24.10.0"
 
-IMAGE="immortalwrt/imagebuilder:x86-64-$VERSION"
+IMAGE="immortalwrt/imagebuilder:x86-64-${VERSION:-snapshot}"
 BUILD_DIR="/home/build/immortalwrt"
 WORK_DIR="$(pwd)"
 

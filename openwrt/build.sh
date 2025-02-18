@@ -1,21 +1,38 @@
 #!/bin/bash
 # shellcheck disable=SC2207
 
-: "${MIRROR_URL:="https://mirror.nju.edu.cn/openwrt"}"
+MIRROR_URL="${MIRROR_URL:-https://mirror.nju.edu.cn/openwrt}"
+VERSION_PATH="${VERSION_PATH:-snapshots}"
 
+# 初始化环境
 if [ -n "$MIRROR_URL" ]; then
-    # 初始化环境
     [ -x ./setup.sh ] && UPSTREAM_URL="$MIRROR_URL" ./setup.sh
+else
+    [ -x ./setup.sh ] && ./setup.sh
+fi
 
-    # 替换软件源
+# 替换软件源
+if [ -n "$MIRROR_URL" ]; then
     if [ -f repositories.conf ]; then
         sed -i "s|https://downloads.openwrt.org|$MIRROR_URL|g" repositories.conf
     elif [ -f repositories ]; then
         sed -i "s|https://downloads.openwrt.org|$MIRROR_URL|g" repositories
     fi
-else
-    # 初始化环境
-    [ -x ./setup.sh ] && ./setup.sh
+fi
+
+EXTRA_MIRROR_URL="${EXTRA_MIRROR_URL:-https://mirror.nju.edu.cn/immortalwrt}"
+# 第三方软件
+if [ -n "$EXTRA_MIRROR_URL" ]; then
+    if [ -f repositories.conf ]; then
+        # 不验证签名
+        sed -i -re 's/^(option check_signature.*)/# \1/g' repositories.conf
+        echo "CONFIG_SIGNATURE_CHECK=" >>.config
+        echo "src/gz extra_luci $EXTRA_MIRROR_URL/$VERSION_PATH/packages/x86_64/luci" >>repositories.conf
+    elif [ -f repositories ]; then
+        # 不验证签名
+        echo "CONFIG_SIGNATURE_CHECK=" >>.config
+        echo "$EXTRA_MIRROR_URL/$VERSION_PATH/packages/x86_64/luci/packages.adb" >>repositories
+    fi
 fi
 
 # 不需要的格式
@@ -63,11 +80,15 @@ INCLUDEDS=(
     luci-compat
     luci-lib-ipkg
 
+    # luci 主题
+    luci-theme-argon
+
     # luci 应用
     luci-i18n-base-zh-cn            # 基础中文包
     luci-i18n-firewall-zh-cn        # 防火墙
     luci-i18n-package-manager-zh-cn # 软件包管理工具
     luci-i18n-upnp-zh-cn            # UPnP 管理工具
+    luci-i18n-argon-config-zh-cn    # Argon 配置工具
 )
 
 # 排除组件
