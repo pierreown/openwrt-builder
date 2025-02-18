@@ -1,10 +1,14 @@
 #!/bin/bash
 
+: "${MIRROR_URL:="https://mirror.nju.edu.cn/immortalwrt"}"
+: "${VERSION:="openwrt-24.10.0"}" # or "snapshot"
+
 PREFIX="/home/build/immortalwrt"
 
 docker run --rm -it --net=host \
-    -v ./output/bin:$PREFIX/bin -v ./output/dl:$PREFIX/dl \
+    -v ./bin:$PREFIX/bin \
     -v ./files:$PREFIX/files \
     -v ./build.sh:$PREFIX/build.sh \
-    immortalwrt/imagebuilder:x86-64-openwrt-24.10.0 \
+    -e MIRROR_URL="$MIRROR_URL" \
+    "immortalwrt/imagebuilder:x86-64-$VERSION" \
     $PREFIX/build.sh

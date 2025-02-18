@@ -1,13 +1,20 @@
 #!/bin/bash
 # shellcheck disable=SC2207
 
-export UPSTREAM_URL="https://mirror.nju.edu.cn/openwrt"
+if [ -n "$MIRROR_URL" ]; then
+    # 初始化环境
+    [ -x ./setup.sh ] && UPSTREAM_URL="$MIRROR_URL" ./setup.sh
 
-# 初始化打包环境
-[ -x ./setup.sh ] && ./setup.sh
-
-# 替换软件源
-[ -f repositories.conf ] && sed -i "s|https://downloads.openwrt.org|$UPSTREAM_URL|g" repositories.conf
+    # 替换软件源
+    if [ -f repositories.conf ]; then
+        sed -i "s|https://downloads.openwrt.org|$MIRROR_URL|g" repositories.conf
+    elif [ -f repositories ]; then
+        sed -i "s|https://downloads.openwrt.org|$MIRROR_URL|g" repositories
+    fi
+else
+    # 初始化环境
+    [ -x ./setup.sh ] && ./setup.sh
+fi
 
 # 不需要的格式
 cat <<EOF >>.config
@@ -51,6 +58,8 @@ INCLUDEDS=(
     # luci
     luci
     luci-light
+    luci-compat
+    luci-lib-ipkg
 
     # luci 应用
     luci-i18n-base-zh-cn            # 基础中文包

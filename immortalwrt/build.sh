@@ -1,10 +1,14 @@
 #!/bin/bash
 # shellcheck disable=SC2207
 
-export UPSTREAM_URL="https://mirror.nju.edu.cn/immortalwrt"
-
-# 替换软件源
-[ -f repositories.conf ] && sed -i "s|https://downloads.immortalwrt.org|$UPSTREAM_URL|g" repositories.conf
+if [ -n "$MIRROR_URL" ]; then
+    # 替换软件源
+    if [ -f repositories.conf ]; then
+        sed -i "s|https://downloads.immortalwrt.org|$MIRROR_URL|g" repositories.conf
+    elif [ -f repositories ]; then
+        sed -i "s|https://downloads.immortalwrt.org|$MIRROR_URL|g" repositories
+    fi
+fi
 
 # 不需要的格式
 cat <<EOF >>.config
@@ -45,10 +49,12 @@ INCLUDEDS=(
     htop
     curl
     # wget-ssl tar gzip xz bzip2
-    
+
     # luci
     luci
     luci-light
+    luci-compat
+    luci-lib-ipkg
 
     # luci 主题
     luci-theme-argon
