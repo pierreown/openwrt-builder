@@ -1,6 +1,8 @@
 #!/bin/bash
 # shellcheck disable=SC2207
 
+: "${MIRROR_URL:="https://mirror.nju.edu.cn/openwrt"}"
+
 if [ -n "$MIRROR_URL" ]; then
     # 初始化环境
     [ -x ./setup.sh ] && UPSTREAM_URL="$MIRROR_URL" ./setup.sh

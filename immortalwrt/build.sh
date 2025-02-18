@@ -1,6 +1,8 @@
 #!/bin/bash
 # shellcheck disable=SC2207
 
+: "${MIRROR_URL:="https://mirror.nju.edu.cn/immortalwrt"}"
+
 if [ -n "$MIRROR_URL" ]; then
     # 替换软件源
     if [ -f repositories.conf ]; then
