@@ -22,7 +22,10 @@ CONFIG_QCOW2_IMAGES=n
 CONFIG_TARGET_ROOTFS_SQUASHFS=n
 EOF
 
-# fix bios boot partition is under 1 MiB
+# 修改默认对齐大小
+# 1. 对 UEFI 更友好
+# 2. 修复警告 "bios boot partition is under 1 MiB"
+# * 原本 256 对齐的系统，不可直接用 sysupgrade 升级 1024 对齐的固件，会损坏原有分区表
 sed -i 's/256/1024/g' target/linux/x86/image/Makefile
 
 # 包含组件
