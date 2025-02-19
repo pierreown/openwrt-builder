@@ -22,6 +22,9 @@ CONFIG_QCOW2_IMAGES=n
 CONFIG_TARGET_ROOTFS_SQUASHFS=n
 EOF
 
+# fix bios boot partition is under 1 MiB
+sed -i 's/256/1024/g' target/linux/x86/image/Makefile
+
 # 包含组件
 INCLUDEDS=(
     # kmod：PVE 虚拟网卡驱动
