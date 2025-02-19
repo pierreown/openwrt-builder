@@ -21,7 +21,7 @@ if [ -n "$MIRROR_URL" ]; then
 fi
 
 EXTRA_MIRROR_URL="${EXTRA_MIRROR_URL:-https://mirror.nju.edu.cn/immortalwrt}"
-# 第三方软件
+# 第三方软件源
 if [ -n "$EXTRA_MIRROR_URL" ]; then
     if [ -f repositories.conf ]; then
         # 不验证签名 https://github.com/immortalwrt/keyring/tree/master/usign
@@ -43,6 +43,9 @@ CONFIG_VMDK_IMAGES=n
 CONFIG_VHDX_IMAGES=n
 CONFIG_TARGET_ROOTFS_SQUASHFS=n
 EOF
+
+# fix bios boot partition is under 1 MiB
+sed -i 's/256/1024/g' target/linux/x86/image/Makefile
 
 # 包含组件
 INCLUDEDS=(
